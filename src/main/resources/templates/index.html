@@ -13,6 +13,7 @@
     <div th:if="${message}" class="alert alert-success" role="alert" th:text="${message}"></div>
 
     <th:block th:replace="~{fragments/clients :: clients}"></th:block>
+    <th:block th:replace="~{fragments/bookings :: bookings}"></th:block>
 </div>
 </body>
 </html>
