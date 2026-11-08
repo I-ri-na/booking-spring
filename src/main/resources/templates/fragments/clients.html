@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="clients">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Добавить клиента</h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/add/client}" method="post">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <input type="text" name="name" class="form-control" placeholder="Имя" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="tel" name="phone" class="form-control" placeholder="Телефон" required>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="email" name="email" class="form-control" placeholder="Email" required>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="submit" class="btn btn-primary w-100">Добавить клиента</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Клиенты</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Имя</th>
+                            <th>Телефон</th>
+                            <th>Email</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="client : ${clients}">
+                            <td th:text="${client.id}"></td>
+                            <td>
+                                <input type="text" name="name" th:value="${client.name}"
+                                       th:attr="form=${'edit-client-' + client.id}"
+                                       class="form-control form-control-sm" required>
+                            </td>
+                            <td>
+                                <input type="tel" name="phone" th:value="${client.phone}"
+                                       th:attr="form=${'edit-client-' + client.id}"
+                                       class="form-control form-control-sm" required>
+                            </td>
+                            <td>
+                                <input type="email" name="email" th:value="${client.email}"
+                                       th:attr="form=${'edit-client-' + client.id}"
+                                       class="form-control form-control-sm" required>
+                            </td>
+                            <td class="text-nowrap">
+                                <form th:id="${'edit-client-' + client.id}"
+                                      th:action="@{/edit/client/{id}(id=${client.id})}"
+                                      method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-primary btn-sm">Сохранить</button>
+                                </form>
+                                <form th:action="@{/delete/client/{id}(id=${client.id})}"
+                                      method="post" class="d-inline"
+                                      onsubmit="return confirm('Удалить клиента вместе со всеми его бронированиями?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
