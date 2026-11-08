@@ -1,5 +1,6 @@
 package com.booking.controller;
 
+import com.booking.service.BookingService;
 import com.booking.service.ClientService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,9 +13,13 @@ public class HomeController {
     @Autowired
     private ClientService clientService;
 
+    @Autowired
+    private BookingService bookingService;
+
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("clients", clientService.getAllClients());
+        model.addAttribute("bookings", bookingService.getAllBookings());
         return "index";
     }
 }

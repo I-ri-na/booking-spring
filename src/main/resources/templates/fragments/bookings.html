@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="bookings">
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Добавить бронирование</h5>
+        </div>
+        <div class="card-body">
+            <form th:action="@{/add/booking}" method="post">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <select name="clientId" class="form-select" required>
+                            <option value="" disabled selected>Выберите клиента</option>
+                            <option th:each="client : ${clients}"
+                                    th:value="${client.id}"
+                                    th:text="${client.name} + ' (' + ${client.email} + ')'">
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="date" name="checkIn" class="form-control" title="Дата заезда" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="date" name="checkOut" class="form-control" title="Дата выезда" required>
+                    </div>
+                    <div class="col-md-2">
+                        <input type="text" name="roomNumber" class="form-control" placeholder="101"
+                               maxlength="10" required>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-success w-100">Добавить</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>Бронирования</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Клиент</th>
+                            <th>Заезд</th>
+                            <th>Выезд</th>
+                            <th>Комната</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="booking : ${bookings}">
+                            <td th:text="${booking.id}"></td>
+                            <td th:text="${booking.client.name} + ' (' + ${booking.client.email} + ')'"></td>
+                            <td>
+                                <input type="date" name="checkIn" th:value="${booking.checkIn}"
+                                       th:attr="form=${'edit-booking-' + booking.id}"
+                                       class="form-control form-control-sm" style="width:140px;" required>
+                            </td>
+                            <td>
+                                <input type="date" name="checkOut" th:value="${booking.checkOut}"
+                                       th:attr="form=${'edit-booking-' + booking.id}"
+                                       class="form-control form-control-sm" style="width:140px;" required>
+                            </td>
+                            <td>
+                                <input type="text" name="roomNumber" th:value="${booking.roomNumber}"
+                                       th:attr="form=${'edit-booking-' + booking.id}"
+                                       class="form-control form-control-sm" style="width:80px;"
+                                       maxlength="10" required>
+                            </td>
+                            <td>
+                                <select name="status" th:attr="form=${'edit-booking-' + booking.id}"
+                                        class="form-select form-select-sm" required>
+                                    <option value="created"
+                                            th:selected="${booking.status?.name() == 'created'}">Создан</option>
+                                    <option value="confirmed"
+                                            th:selected="${booking.status?.name() == 'confirmed'}">Подтвержден</option>
+                                    <option value="cancelled"
+                                            th:selected="${booking.status?.name() == 'cancelled'}">Отменен</option>
+                                    <option value="checked_in"
+                                            th:selected="${booking.status?.name() == 'checked_in'}">Заезд</option>
+                                    <option value="checked_out"
+                                            th:selected="${booking.status?.name() == 'checked_out'}">Выезд</option>
+                                </select>
+                            </td>
+                            <td class="text-nowrap">
+                                <form th:id="${'edit-booking-' + booking.id}"
+                                      th:action="@{/edit/booking/{id}(id=${booking.id})}"
+                                      method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-sm btn-primary">Изменить</button>
+                                </form>
+                                <form th:action="@{/delete/booking/{id}(id=${booking.id})}"
+                                      method="post" class="d-inline"
+                                      onsubmit="return confirm('Удалить бронирование?');">
+                                    <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</th:block>
+</body>
+</html>
